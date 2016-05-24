@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+function bootstrap {
+  local shome="$(cd -P -- "$(dirname -- "$BASH_SOURCE")/.." && pwd -P)"
+  source "$shome/script/profile"
+
+  export GO15VENDOREXPERIMENT=1 # only required for go 1.5.x
+  export GOROOT="$(dirname $(dirname $(which go)))"
+  export GOPATH="$shome/vendor/gocode"
+  export PATH="$PATH:$GOPATH/bin:$GOROOT/bin"
+
+  mkdir -p "$GOPATH/src/github.com/docker"
+
+  cd "$GOPATH/src/github.com/docker"
+  git clone git@github.com:docker/swarm || true
+
+  cd swarm
+  git fetch
+  git reset --hard origin/master
+
+  go get github.com/tools/godep
+  go get github.com/golang/lint/golint
+
+  go install .
+
+  ln -nfs "../vendor/gocode/bin/swarm" "$shome/bin/"
+}
+
+bootstrap
