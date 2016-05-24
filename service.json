@@ -1,0 +1,9 @@
+{
+  "services": {
+    "docker-swarm-primary": {
+      "run": "~/work/docker-swarm/script/server",
+      "env": {
+      }
+    }
+  }
+}

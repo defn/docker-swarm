@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+function main {
+  local shome="$(cd -P -- "$(dirname -- "$BASH_SOURCE")/.." && pwd -P)"
+  source "$shome/script/profile"
+
+  exec swarm manage --tlsverify \
+    --tlscacert=$HOME/.docker/machine/certs/ca.pem \
+    --tlscert=$HOME/.docker/machine/certs/cert.pem \
+    --tlskey=$HOME/.docker/machine/certs/key.pem \
+    --strategy spread --advertise 172.28.128.1:3376 \
+    -H tcp://0.0.0.0:3376 \
+    consul://172.28.128.1:8500
+}
+
+main "$@"
